@@ -2,7 +2,7 @@
 
 An AI-powered Document Question Answering system that allows users to upload a PDF and chat with its contents using Retrieval-Augmented Generation (RAG).
 
-The application extracts text from uploaded PDFs, converts it into embeddings, stores them in ChromaDB, retrieves the most relevant information based on the user's query, and generates accurate answers using Google's Gemini 2.5 Flash model.
+The application extracts text from uploaded PDFs, converts it into embeddings, stores them in ChromaDB, retrieves the most relevant information based on the user's query, and generates accurate answers using Google's Gemini 2.5 Flash model. 
 
 ---
 
