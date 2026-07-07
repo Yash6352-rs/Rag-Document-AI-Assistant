@@ -253,5 +253,3 @@ The `output/` folder contains:
 # 👨‍💻 Developed By
 
 **Yash Panchal**
-
-AI Intern Assessment Project
