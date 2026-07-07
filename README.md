@@ -233,17 +233,15 @@ GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
 
 The `output/` folder contains:
 
-- Application Screenshots
+- Screenshots
 - Demo Video
 
 ---
 
-# 💡 Future Improvements
+# 💡 Future Improvements that can be done
 
 - Multi-document support
 - Conversation memory
-- Document summarization
-- OCR support for scanned PDFs
 - User authentication
 - Cloud deployment
 - Streaming AI responses
