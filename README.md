@@ -102,8 +102,8 @@ After the user uploads a PDF:
 2. The extracted text is divided into smaller chunks using **RecursiveCharacterTextSplitter**.
 3. Each chunk has:
 
-- Chunk Size: **800 characters**
-- Chunk Overlap: **150 characters**
+  - Chunk Size: **800 characters**
+  - Chunk Overlap: **150 characters**
 
 Chunk overlap helps preserve context between adjacent chunks and improves retrieval quality.
 
