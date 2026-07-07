@@ -1,0 +1,255 @@
+Phase 1
+✅ Create project
+✅ Conda environment
+✅ Install libraries
+✅ Folder structure
+
+Phase 2
+Flask setup
+HTML page
+CSS
+JS
+
+Phase 3
+PDF Upload
+
+Phase 4
+Extract PDF text
+
+Phase 5
+Chunking
+
+Phase 6
+Embeddings
+
+Phase 7
+Chroma DB
+
+Phase 8
+Gemini API
+
+Phase 9
+Retrieval
+
+Phase 10
+Citations
+
+Phase 11
+Final polishing
+
+
+🚀 Development Plan
+
+Here's how we'll proceed after this:
+
+Phase 1
+✅ Environment
+⏳ Folder structure
+⏳ Dependencies
+
+Phase 2
+Flask app running
+Beautiful frontend
+Upload PDF UI
+
+Phase 3
+Upload endpoint
+Save PDF
+
+Phase 4
+Extract text
+Phase 5
+Chunk text
+
+Phase 6
+Generate embeddings
+
+Phase 7
+Store in ChromaDB
+
+Phase 8
+Chat with Gemini
+
+Phase 9
+Add page number citations
+
+Phase 10
+Final polish, README, GitHub, and submission
+
+
+✅ Phase 1 (Completed)
+Environment setup
+Project structure
+Modern UI
+Flask running
+
+
+🚀 Phase 2: PDF Upload
+
+We'll implement:
+
+User clicks Choose File
+        ↓
+Select PDF
+        ↓
+Click Upload
+        ↓
+Flask receives PDF
+        ↓
+Save in uploads/
+        ↓
+Return Success
+        ↓
+Show filename on UI
+
+No AI yet. Just upload.
+
+
+🚀 Phase 3: PDF Processing
+Upload PDF
+      ↓
+PyPDFLoader
+      ↓
+Extract Text
+      ↓
+Chunk Text
+      ↓
+🚀 Phase 4: Embeddings
+Chunks
+    ↓
+MiniLM Embeddings
+    ↓
+ChromaDB
+🚀 Phase 5: Chat
+Question
+    ↓
+Similarity Search
+    ↓
+Top 4 Chunks
+🚀 Phase 6: Gemini
+Question
++
+Retrieved Chunks
+        ↓
+Gemini 2.5 Flash
+        ↓
+Answer
+🚀 Phase 7: Citations
+Answer
+
+Sources
+
+Page 4
+Page 7
+Page 10
+
+
+
+Priority 1 ⭐⭐⭐⭐⭐-----------------DONE
+Add Real Citations
+
+Currently you only return:
+
+return jsonify({
+    "answer": result["answer"]
+})
+Need:
+Answer
+📚 Sources
+Page 3
+Page 5
+Page 7
+
+We'll use
+result["context"]
+because create_retrieval_chain() returns the retrieved Documents.
+Each document contains metadata like:
+doc.metadata
+which includes
+page
+source
+chunk_id
+
+
+Priority 2 ⭐⭐⭐⭐-----------------DONE
+If user uploads another PDF
+Currently
+PDF1
+↓
+Upload PDF2
+↓
+Old uploads remain
+We should
+Delete uploads/
+Delete Chroma
+↓
+Save new PDF
+↓
+Create new Chroma
+Only one active document.
+
+
+Priority 3 ⭐⭐⭐⭐-----------------DONE
+
+Better Upload Status
+Instead of
+Alert
+Show
+✅ Upload Successful
+113 Chunks Created
+Ready to Chat
+inside UI.
+
+
+Priority 4 ⭐⭐⭐⭐-----------------DONE
+Loading Animation
+When asking
+User
+↓
+🤖 Thinking...
+↓
+Answer
+
+
+Priority 5 ⭐⭐⭐-----------------DONE
+Disable Send until PDF uploaded.
+
+Priority 6 ⭐⭐⭐-----------------DONE
+Handle
+No PDF uploaded
+↓
+Please upload a document first.
+
+
+Priority 7 ⭐⭐⭐ -----------------DONE
+Improve Prompt
+Current prompt is very basic.
+We'll make it like:
+You are a Document AI Assistant.
+Answer ONLY from the provided context.
+If the answer is not in the document, clearly reply:
+"I couldn't find this information in the uploaded document."
+Always be concise.
+If possible, mention page numbers.
+
+
+Priority 8 ⭐⭐
+README
+Need
+Overview
+Features
+Tech Stack
+Architecture
+Installation
+Run
+Folder Structure
+RAG Workflow
+Screenshots
+
+Priority 9 ⭐⭐
+GitHub
+.gitignore
+.env
+requirements.txt
+README
+clean commits
