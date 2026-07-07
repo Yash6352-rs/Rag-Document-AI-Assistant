@@ -234,6 +234,12 @@ GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
 The `output/` folder contains:
 
 - Screenshots
+  - 1-homepage
+  - 2-pdf-uploading
+  - 3-pdf-uploaded
+  - 4-user-ques
+  - 5- assistant-answer
+  - 6-Q-A
 - Demo Video
 
 ---
