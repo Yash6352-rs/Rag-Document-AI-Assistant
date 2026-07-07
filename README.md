@@ -73,7 +73,6 @@ The application extracts text from uploaded PDFs, converts it into embeddings, s
 ## Backend
 
 - Flask
-- Flask-CORS
 - Python
 
 ---
