@@ -17,26 +17,32 @@ export default function Sidebar({
           Upload Document
         </h2>
 
-        <div className="mt-5 border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-blue-500 transition">
+        <label
+          htmlFor="pdf-upload"
+          className="mt-5 border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-blue-500 transition cursor-pointer block"
+        >
           <Upload className="mx-auto text-blue-500" size={40} />
 
-          <p className="mt-4 font-medium">
+          <p className="mt-4 font-medium text-lg">
             Choose a PDF
           </p>
 
           <p className="text-sm text-slate-500 mt-1">
-            Drag & Drop or Browse
+            Browse it
           </p>
 
-          <input
-            type="file"
-            accept=".pdf"
-            onChange={(e) => {
-              setSelectedFile(e.target.files[0])
-            }}
-            className="mt-5 block w-full text-sm"
-          />
-        </div>
+          <p className="mt-5 text-sm text-slate-700">
+            {selectedFile ? selectedFile.name : "No file selected"}
+          </p>
+        </label>
+
+        <input
+          id="pdf-upload"
+          type="file"
+          accept=".pdf"
+          className="hidden"
+          onChange={(e) => setSelectedFile(e.target.files[0])}
+        />
 
         <button 
           onClick={async () => {
