@@ -307,6 +307,20 @@ GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
 ```
 ---
 
+# 📷 Output 
+The output/ folder contains: 
+- Screenshots
+  - 1-homepage
+  - 2-pdf-uploading
+  - 3-pdf-uploaded
+  - 4-user-ques
+  - 5-assistant-answer
+  - 6-conversational-chat
+  - 7-multi-pdf-upload
+  - 8-multi-document-q&a
+  - Architecture Diagram
+  -  
+---
 ## 🔮 Future Improvements
 
 - 🔐 User authentication
