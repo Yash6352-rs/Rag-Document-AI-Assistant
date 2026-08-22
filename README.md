@@ -169,7 +169,7 @@ For example:
 User: What is machine learning?
 
 User: What are its types?
-```python
+```
 The second question is rewritten using Gemini and conversation history into a standalone search query.
 
 This improves retrieval for follow-up questions.
