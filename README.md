@@ -108,6 +108,7 @@ The extracted text is divided into chunks using:
 RecursiveCharacterTextSplitter(
     chunk_size=800, chunk_overlap=150
 )
+```
 
 Each chunk receives metadata such as:
   document_id
@@ -118,8 +119,9 @@ Each chunk receives metadata such as:
 ## 2. Embeddings
 
 The project uses:
+```text
 sentence-transformers/all-MiniLM-L6-v2
-
+```
 to convert document chunks into vector embeddings.
 
 The embeddings are stored in ChromaDB for semantic retrieval.
@@ -141,6 +143,7 @@ User Query
               ▼
          Top 4 Chunks
 ```
+---
 
 ## Vector Search
 
@@ -157,20 +160,23 @@ The BM25 index is currently maintained in memory.
 Reciprocal Rank Fusion combines the rankings from vector search and BM25.
 
 RRF is used for score fusion; the project does not use a separate reranking model.
+---
 
 ## ✨ Query Rewriting
 
 The system supports conversational follow-up questions.
 
 For example:
-
+```text
 User: What is machine learning?
 
 User: What are its types?
-
+```python
 The second question is rewritten using Gemini and conversation history into a standalone search query.
 
 This improves retrieval for follow-up questions.
+
+---
 
 ## 🤖 Answer Generation
 
@@ -183,6 +189,8 @@ Avoid hallucinations
 Keep answers clear and concise
 Return an appropriate response when information is unavailable
 
+---
+
 ## ⚡ Streaming Responses
 
 The FastAPI backend streams the generated response to the React frontend using NDJSON streaming.
@@ -190,6 +198,8 @@ The FastAPI backend streams the generated response to the React frontend using N
 The frontend displays the answer as it is generated.
 
 After generation, the backend sends the source information.
+
+---
 
 ## 📚 Citations
 
@@ -205,6 +215,8 @@ Page 8 • Chunk 21
 ```
 
 This allows users to understand where the retrieved information came from.
+
+---
 
 ## 📂 Multi-PDF Support
 
