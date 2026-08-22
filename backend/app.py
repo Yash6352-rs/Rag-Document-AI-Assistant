@@ -1,112 +1,140 @@
 import os
+import json
 
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from werkzeug.utils import secure_filename
+from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 
-from utils.rag_pipeline import process_pdf, get_rag_chain
+from utils.rag_pipeline import process_pdf, get_rag_chain, rewrite_query, hybrid_retrieve
 
-app = Flask(__name__)
-CORS(app)
+app = FastAPI()
+
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 UPLOAD_FOLDER = "uploads"
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-
-
-@app.route("/", methods=["GET"])
+@app.get("/")
 def home():
-    return jsonify({
+    return {
         "message": "Document AI Backend Running"
-    })
+    }
 
 
-@app.route("/uploads", methods=["POST"])
-def upload_pdf():
+@app.post("/uploads")
+async def upload_pdf(pdf: UploadFile = File(...)):
 
-    if "pdf" not in request.files:
-        return jsonify({
-            "success": False,
-            "message": "No PDF uploaded."
-        }), 400
-
-    file = request.files["pdf"]
-
-    if file.filename == "":
-        return jsonify({
+    if not pdf.filename:
+        return {
             "success": False,
             "message": "No file selected."
-        }), 400
+        }
 
-    # Delete previous uploaded PDF
-    for old_file in os.listdir(UPLOAD_FOLDER):
-        old_path = os.path.join(UPLOAD_FOLDER, old_file)
-
-        if os.path.isfile(old_path):
-            os.remove(old_path)
-
-    filename = secure_filename(file.filename)
+    filename = pdf.filename
 
     filepath = os.path.join(
-        app.config["UPLOAD_FOLDER"],
+        UPLOAD_FOLDER,
         filename
     )
 
-    file.save(filepath)
+    # Save PDF
+    contents = await pdf.read()
 
-    total_chunks = process_pdf(filepath)
+    with open(filepath, "wb") as f:
+        f.write(contents)
 
-    return jsonify({
+    results = process_pdf(filepath)
+
+    return {
         "success": True,
-        "filename": filename,
-        "chunks": total_chunks
-    })
+        "document_id": results["document_id"],
+        "filename": results["filename"],
+        "chunks": results["chunks"]
+    }
 
-
-@app.route("/chat", methods=["POST"])
-def chat():
-
-    data = request.get_json()
+@app.post("/chat")
+async def chat(data: dict):
 
     question = data.get("question", "").strip()
+    document_id = data.get("document_id", "").strip()
+    chat_history = data.get("chat_history", [])
 
     if not question:
-        return jsonify({
+        return {
             "success": False,
             "message": "Question cannot be empty."
-        }), 400
+        }
 
-    qa = get_rag_chain()
+    if not document_id:
+        return {
+            "success": False,
+            "message": "Document ID is required."
+        }
 
-    result = qa.invoke({
-        "input": question
-    })
+    # Query rewriting
+    search_query = rewrite_query(
+        question,
+        chat_history
+    )
 
+    # Hybrid retrieval
+    documents = hybrid_retrieve(search_query)
+
+    # Get document chain
+    document_chain = get_rag_chain()
+
+    # Citations
     unique_sources = set()
 
-    for doc in result["context"]:
+    for doc in documents:
 
+        filename = doc.metadata.get("filename", "Unknown")
         page = doc.metadata.get("page", 0) + 1
         chunk = doc.metadata.get("chunk_id", "-")
 
-        unique_sources.add((page, chunk))
+        unique_sources.add(
+            (filename, page, chunk)
+        )
 
     sources = [
         {
+            "filename": filename,
             "page": page,
             "chunk": chunk
         }
-        for page, chunk in sorted(unique_sources)
+        for filename, page, chunk in sorted(unique_sources)
     ]
 
-    return jsonify({
-        "success": True,
-        "answer": result["answer"],
-        "sources": sources
-    })
+    def generate():
 
+        # Stream answer tokens
+        for chunk in document_chain.stream({
+            "context": documents,
+            "input": question
+        }):
 
-if __name__ == "__main__":
-    app.run(debug=True)
+            if chunk:
+
+                yield json.dumps({
+                    "type": "token",
+                    "content": chunk
+                }) + "\n"
+
+        # Send citations AFTER answer is complete
+        yield json.dumps({
+            "type": "sources",
+            "sources": sources
+        }) + "\n"
+
+    return StreamingResponse(
+        generate(),
+        media_type="application/x-ndjson"
+    )

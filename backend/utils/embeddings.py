@@ -1,5 +1,3 @@
-import os
-import shutil
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 
@@ -12,22 +10,13 @@ def get_embedding_model():
 
 def create_vector_db(chunks):
     embedding_model = get_embedding_model()
+
     vectordb = Chroma(
         persist_directory=DB_PATH,
         embedding_function=embedding_model
     )
 
-    # Delete all existing vectors from the collection
-    try:
-        vectordb.delete_collection()
-    except Exception:
-        pass
-
-    vectordb = Chroma.from_documents(
-        documents=chunks,
-        embedding=embedding_model,
-        persist_directory=DB_PATH
-    )
+    vectordb.add_documents(chunks)
 
     return vectordb
 

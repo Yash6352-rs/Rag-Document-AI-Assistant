@@ -1,134 +1,463 @@
-import { Upload, FileText, Info } from "lucide-react";
+import { Upload, FileText, CheckCircle2 } from "lucide-react";
+
 import api from "../services/api";
 import toast from "react-hot-toast";
 
 export default function Sidebar({
-  selectedFile, setSelectedFile, uploaded, setUploaded, status, setStatus,
-  currentPdf, setCurrentPdf, chunks, setChunks, processing, setProcessing
+  selectedFile, setSelectedFile,
+  setUploaded, status, setStatus,
+  setChunks, processing, setProcessing,
+  documents, setDocuments
 }) {
-  
+
+  const handleUpload = async () => {
+
+    if (!selectedFile) {
+      toast.error("Please select a PDF.");
+      return;
+    }
+
+    setProcessing(true);
+    setStatus("Generating Embeddings...");
+
+    const formData = new FormData();
+
+    formData.append("pdf", selectedFile);
+
+    try {
+      const res = await api.post(
+        "/uploads",
+        formData
+      );
+
+      const newDocument = {
+        id: res.data.document_id,
+        filename: res.data.filename,
+        chunks: res.data.chunks
+      };
+
+      // Add new document to the list
+      setDocuments(prev => [
+        ...prev,
+        newDocument
+      ]);
+
+      setUploaded(true);
+      setChunks(res.data.chunks);
+      setStatus("Ready To Chat");
+
+      // Clear selected file
+      setSelectedFile(null);
+
+      toast.success(
+        `PDF uploaded successfully! ${res.data.chunks} chunks created.`
+      );
+
+    } catch (error) {
+      console.error(error);
+
+      setStatus("Upload Failed");
+      toast.error("Upload failed.");
+
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 h-full">
+    <div className="
+      bg-white
+      rounded-2xl
+      border
+      border-slate-200
+      shadow-sm
+      p-5
+      h-full
+    ">
 
-      {/* Upload Section */}
-      <div>
-        <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-800">
-          <Upload className="text-blue-600" size={22} />
-          Upload Document
-        </h2>
+      {/* Upload Header */}
+      <div className="flex items-center gap-3">
 
-        <label
-          htmlFor="pdf-upload"
-          className="mt-5 border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-blue-500 transition cursor-pointer block"
-        >
-          <Upload className="mx-auto text-blue-500" size={40} />
+        <div className="
+          w-12
+          h-12
+          rounded-xl
+          bg-blue-50
+          flex
+          items-center
+          justify-center
+        ">
+          <Upload size={21} className="text-blue-600" />
+        </div>
 
-          <p className="mt-4 font-medium text-lg">
-            Choose a PDF
+        <div>
+          <p className="
+            text-[19px]
+            font-semibold
+            text-slate-800
+          ">
+            Upload Documents
           </p>
 
-          <p className="text-sm text-slate-500 mt-1">
-            Browse it
+          <p className="
+            text-xs
+            text-slate-500
+            mt-0.5
+          ">
+            Add PDFs to your knowledge base
           </p>
-
-          <p className="mt-5 text-sm text-slate-700">
-            {selectedFile ? selectedFile.name : "No file selected"}
-          </p>
-        </label>
-
-        <input
-          id="pdf-upload"
-          type="file"
-          accept=".pdf"
-          className="hidden"
-          onChange={(e) => setSelectedFile(e.target.files[0])}
-        />
-
-        <button 
-          onClick={async () => {
-            if (!selectedFile) {
-              toast.error("Please select a PDF.");
-              return;
-            }
-            setProcessing(true);
-
-            setStatus("Generating Embeddings...");
-
-            const formData = new FormData();
-            formData.append("pdf", selectedFile)
-
-            try {
-              const res = await api.post("/uploads", formData);
-  
-              setUploaded(true);
-              setCurrentPdf(res.data.filename);
-              setChunks(res.data.chunks);
-              setStatus("Ready To Chat");
-              toast.success(`PDF uploaded successfully!\n ${res.data.chunks} chunks created.`)
-            }
-            catch(error) {
-              toast.error("Upload failed.");
-            }
-            finally {
-              setProcessing(false);
-            }
-          }}
-        
-          className="w-full mt-5 bg-blue-600 hover:bg-blue-700 transition text-white py-3 rounded-xl font-semibold">
-          
-          {processing? (
-            <div className="flex justify-center items-center gap-3">
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"/>
-              Processing...
-            </div>
-          ) : (
-            "Upload PDF"
-          )}
-        </button>
-      </div>
-
-      {/* Status */}
-      <div className="mt-8 bg-slate-50 rounded-xl p-4 border">
-        <h3 className="font-semibold flex items-center gap-2">
-          <Info size={18} />
-          Status
-        </h3>
-
-        <div className="mt-3 inline-flex px-3 py-1 rounded-full bg-gray-200 text-gray-700 text-sm">
-          {status}
         </div>
       </div>
 
-      {/* Current Document */}
-      <div className="mt-6 bg-blue-50 rounded-xl p-4 border border-blue-100">
-        <h3 className="font-semibold flex items-center gap-2">
-          <FileText size={18} />
-          Current Document
-        </h3>
 
-        <p className="mt-3 text-slate-600">
-          {currentPdf || "None"}
+      {/* Upload Box */}
+
+      <label
+        htmlFor="pdf-upload"
+        className="
+          mt-5
+          border-2
+          border-dashed
+          border-slate-200
+          rounded-xl
+          p-6
+          text-center
+          hover:border-blue-400
+          hover:bg-blue-50/30
+          transition
+          cursor-pointer
+          block
+        "
+      >
+
+        <div className="
+          mx-auto
+          flex
+          items-center
+          justify-center
+        ">
+          <Upload size={30} className="text-blue-600"/>
+        </div>
+
+        <p className="
+          mt-3
+          font-medium
+          text-slate-800
+        ">
+          Choose a PDF
         </p>
 
-        {uploaded && (
-          <p className="mt-3 text-sm text-slate-500">
-            Chunks: {chunks}
-          </p>
+
+        <p className=" text-xs text-slate-500 mt-1">
+          PDF files only
+        </p>
+
+        <p className="
+          mt-3
+          text-xs
+          text-blue-600
+          truncate
+          px-2
+        ">
+          {selectedFile ? selectedFile.name
+            : "No file selected"
+          }
+        </p>
+      </label>
+
+
+      <input
+        id="pdf-upload"
+        type="file"
+        accept=".pdf"
+        className="hidden"
+        onChange={(e) => {
+
+          const file = e.target.files?.[0];
+
+          if (file) {
+            setSelectedFile(file);
+          }
+
+        }}
+      />
+
+
+      {/* Upload Button */}
+
+      <button
+        onClick={handleUpload}
+        disabled={!selectedFile || processing}
+        className="
+          w-full
+          mt-4
+          bg-blue-600
+          hover:bg-blue-700
+          disabled:bg-blue-300
+          disabled:cursor-not-allowed
+          text-white
+          py-3
+          rounded-xl
+          font-semibold
+          transition
+        "
+      >
+        {processing ? (
+
+          <div className="
+            flex
+            items-center
+            justify-center
+            gap-2
+          ">
+
+            <div className="
+              w-4
+              h-4
+              border-2
+              border-white
+              border-t-transparent
+              rounded-full
+              animate-spin
+            " />
+            Processing...
+          </div>
+
+        ) : (
+          "Upload PDF"
         )}
 
+      </button>
+
+
+      {/* Status */}
+      <div className="
+        mt-5
+        rounded-xl
+        bg-slate-50
+        border
+        border-slate-200
+        p-3.5
+      ">
+
+        <div className="
+          flex
+          items-center
+          justify-between
+          gap-2
+        ">
+
+          <div className="
+            flex
+            items-center
+            gap-2
+          ">
+
+            <span className="
+              w-2
+              h-2
+              rounded-full
+              bg-emerald-500
+            " />
+
+            <span className="
+              text-sm
+              font-medium
+              text-slate-700
+            ">
+              Status
+            </span>
+
+          </div>
+
+          <span className="
+            text-xs
+            font-medium
+            text-slate-500
+            truncate
+          ">
+            {status}
+          </span>
+
+        </div>
+
       </div>
 
-      {/* Tips */}
-      <div className="mt-6 rounded-xl bg-violet-50 border border-violet-100 p-4">
-        <h3 className="font-semibold text-violet-700">
-          💡 Tips
-        </h3>
+      {/*  Uploaded Documents*/}
+      <div className="mt-6">
 
-        <p className="mt-2 text-sm text-slate-600">
-          Upload one PDF and ask questions about its contents.
-        </p>
+        {/* Section Header */}
+
+        <div className="
+          flex
+          items-center
+          justify-between
+          mb-3
+        ">
+
+          <div className="flex items-center gap-2">
+
+            <FileText
+              size={18}
+              className="text-blue-600"
+            />
+
+            <h3 className="
+              font-semibold
+              text-slate-800
+            ">
+              Uploaded Documents
+            </h3>
+
+          </div>
+
+
+          <span className="
+            min-w-6
+            h-6
+            px-2
+            rounded-full
+            bg-blue-50
+            text-blue-600
+            text-xs
+            font-semibold
+            flex
+            items-center
+            justify-center
+          ">
+            {documents.length}
+          </span>
+
+        </div>
+
+        {/* Scrollable Document List */}
+        <div className="
+          space-y-2
+          max-h-[330px]
+          overflow-y-auto
+          pr-1
+        ">
+
+          {documents.length === 0 ? (
+
+            <div className="
+              border
+              border-dashed
+              border-slate-200
+              rounded-xl
+              p-5
+              text-center
+            ">
+
+              <FileText
+                size={28}
+                className="
+                  mx-auto
+                  text-slate-300
+                "
+              />
+
+              <p className="
+                text-sm
+                text-slate-500
+                mt-2
+              ">
+                No documents uploaded
+              </p>
+
+              <p className="
+                text-xs
+                text-slate-400
+                mt-1
+              ">
+                Upload a PDF to get started
+              </p>
+
+            </div>
+
+          ) : (
+
+            documents.map((document) => (
+
+              <div
+                key={document.id}
+                className="
+                  flex
+                  items-center
+                  gap-3
+                  p-3
+                  rounded-xl
+                  border
+                  border-slate-200
+                  bg-white
+                  hover:border-blue-200
+                  hover:bg-blue-50/30
+                  transition
+                "
+              >
+
+                {/* PDF Icon */}
+
+                <div className="pl-1.5 pr-1">
+
+                  <FileText
+                    size={32}
+                    className="text-red-500"
+                  />
+
+                </div>
+
+
+                {/* File Details */}
+
+                <div className="
+                  min-w-0
+                  flex-1
+                ">
+
+                  <p
+                    className="
+                      text-sm
+                      font-medium
+                      text-slate-800
+                      truncate
+                    "
+                    title={document.filename}
+                  >
+                    {document.filename}
+                  </p>
+
+
+                  <p className="
+                    text-xs
+                    text-slate-500
+                    mt-1
+                  ">
+                    {document.chunks} chunks
+                  </p>
+
+                </div>
+
+
+                {/* Uploaded Status */}
+
+                <CheckCircle2
+                  size={17}
+                  className="
+                    text-emerald-500
+                    shrink-0
+                  "
+                />
+
+              </div>
+
+            ))
+
+          )}
+        </div>
+
       </div>
-
     </div>
   );
 }
