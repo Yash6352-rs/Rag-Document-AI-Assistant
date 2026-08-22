@@ -67,7 +67,7 @@ The system combines **semantic vector search, MMR, BM25 keyword search, and Reci
                          │
                          ▼
                    Stream to UI
-
+```
 ---
 
 ⚙️ Tech Stack
