@@ -70,7 +70,7 @@ The system combines **semantic vector search, MMR, BM25 keyword search, and Reci
 ```
 ---
 
-⚙️ Tech Stack
+## ⚙️ Tech Stack
 
 - Frontend
   - React.js
@@ -140,6 +140,7 @@ User Query
               │
               ▼
          Top 4 Chunks
+```
 
 ## Vector Search
 
@@ -201,6 +202,7 @@ Generative AI Overview.pdf
 Page 3 • Chunk 2
 Page 6 • Chunk 13
 Page 8 • Chunk 21
+```
 
 This allows users to understand where the retrieved information came from.
 
@@ -245,11 +247,15 @@ Rag-Document-AI-Assistant/
 │   └── vite.config.js
 │
 └── README.md
+```
 
 ---
 
 ## 🚀 Installation
-Backend
+
+### Backend
+
+```text
 cd backend
 
 conda create -n documentai python=3.10
@@ -262,24 +268,30 @@ uvicorn app:app --reload
 Backend:
 
 http://127.0.0.1:8000
+```
 
-API documentation:
-
+### API documentation:
+```text
 http://127.0.0.1:8000/docs
 Frontend
 cd frontend
 
 npm install
 npm run dev
+```
 
-Frontend:
-
+### Frontend:
+```text
 http://localhost:5173
-🔑 Environment Variables
+```
 
+### 🔑 Environment Variables
+
+```text
 Create .env inside the backend:
 
 GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
+```
 
 ## 🔮 Future Improvements
 
@@ -298,8 +310,8 @@ GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
 ## 👨‍💻 Developed By
 
 Yash Panchal
-
+```text
 Built with:
 
 React + FastAPI + LangChain + ChromaDB + BM25 + Gemini
-
+```
