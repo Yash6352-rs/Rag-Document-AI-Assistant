@@ -1,259 +1,99 @@
-﻿# 📄 RAG Document AI Assistant
+# 📄 RAG Document AI Assistant
 
-An AI-powered Document Question Answering system that allows users to upload a PDF and chat with its contents using Retrieval-Augmented Generation (RAG).
+An AI-powered **Document Question Answering system** that allows users to upload multiple PDF documents and interact with them through a conversational AI interface.
 
-The application extracts text from uploaded PDFs, converts it into embeddings, stores them in ChromaDB, retrieves the most relevant information based on the user's query, and generates accurate answers using Google's Gemini 2.5 Flash model. 
+The application uses **Retrieval-Augmented Generation (RAG)** to retrieve relevant information from uploaded documents before generating answers with Google's Gemini LLM.
 
----
-
-## ✨ Features
-
-- Upload any PDF document
-- Chat with your uploaded document
-- Retrieval-Augmented Generation (RAG)
-- Automatic text chunking
-- ChromaDB vector database for semantic search
-- Google Gemini 2.5 Flash for answer generation
-- Source citations with Page Number and Chunk ID
-- Fast semantic retrieval
-- Modern React + Tailwind CSS UI
-- Loading indicators during PDF processing and response generation
-- Clear chat functionality
-- Responsive interface
+The system combines **semantic vector search, MMR, BM25 keyword search, and Reciprocal Rank Fusion (RRF)** to improve retrieval quality and provide more reliable answers with source citations.
 
 ---
 
-# 🏗️ Project Architecture
+# ✨ Features
 
-```
-                User Uploads PDF
-                        │
-                        ▼
-              PDF Text Extraction
-                        │
-                        ▼
-                 Text Chunking
-                        │
-                        ▼
-             Generate Embeddings
-                        │
-                        ▼
-             Store in ChromaDB
-                        │
-                        ▼
-                  User Question
-                        │
-                        ▼
-         Semantic Similarity Search
-                        │
-                        ▼
-            Retrieve Relevant Chunks
-                        │
-                        ▼
-              Gemini 2.5 Flash LLM
-                        │
-                        ▼
-            Answer + Source Citations
-```
+- 📄 Upload multiple PDF documents
+- 💬 Conversational document Q&A
+- 🧠 Retrieval-Augmented Generation (RAG)
+- ✂️ Automatic document chunking
+- 🔢 Sentence Transformer embeddings
+- 🗄️ Persistent ChromaDB vector database
+- 🔍 Semantic vector search
+- 🎯 MMR-based diverse retrieval
+- 🔤 BM25 keyword-based retrieval
+- 🔗 Reciprocal Rank Fusion (RRF)
+- ✨ LLM-powered query rewriting
+- 🤖 Google Gemini for answer generation
+- 📚 Source citations with filename, page and chunk ID
+- ⚡ Real-time streaming AI responses
+- 🧾 Conversation history support
+- 📂 Multi-PDF document management
+- 🔄 Hybrid retrieval
+- 🎨 Modern React + Tailwind CSS UI
+- 🔔 Upload and processing status indicators
+- 🗑️ Clear chat functionality
+- ⌨️ Press Enter to send messages
 
 ---
 
-# ⚙️ Tech Stack
-
-## Frontend
-
-- React.js
-- Tailwind CSS
-- Axios
-- React Hot Toast
-- Lucide React Icons
-
----
-
-## Backend
-
-- Flask
-- Python
-
----
-
-## AI / RAG
-
-- LangChain
-- Google Gemini 2.5 Flash
-- ChromaDB
-- HuggingFace Embeddings
-- sentence-transformers/all-MiniLM-L6-v2
-
----
-
-## PDF Processing
-
-- PyPDFLoader
-- RecursiveCharacterTextSplitter
-
----
-
-# 🧠 How Chunking Works
-
-After the user uploads a PDF:
-
-1. The PDF is loaded using **PyPDFLoader**.
-2. The extracted text is divided into smaller chunks using **RecursiveCharacterTextSplitter**.
-3. Each chunk has:
-
-  - Chunk Size: **800 characters**
-  - Chunk Overlap: **150 characters**
-
-Chunk overlap helps preserve context between adjacent chunks and improves retrieval quality.
-
-Each chunk is also assigned a unique **Chunk ID**, which is later displayed as part of the answer citations.
-
----
-
-# 🔍 How Retrieval Works
-
-When a user asks a question:
-
-1. The question is converted into an embedding.
-2. ChromaDB performs semantic similarity search.
-3. The **Top 4 most relevant chunks** are retrieved.
-4. These chunks are passed to Gemini 2.5 Flash.
-5. Gemini generates an answer **only using the retrieved context**.
-6. The application displays:
-   - Answer
-   - Source Page Number
-   - Chunk ID
-
-This approach minimizes hallucinations by restricting the model to the retrieved document context.
-
----
-
-# 📚 Source Citations
-
-Each generated answer includes citations such as:
-
-```
-📚 Sources
-
-Page 8 | Chunk 22
-Page 10 | Chunk 31
-Page 14 | Chunk 45
-```
-
-These citations help users identify where the information originated within the uploaded document.
-
----
-
-# 📂 Folder Structure
-
-```
-Rag-Document-AI-Assistant/
-
-├── backend/
-│   ├── app.py
-│   ├── uploads/
-│   ├── chroma_db/
-│   ├── utils/
-│   │   ├── chunking.py
-│   │   ├── embeddings.py
-│   │   ├── pdf_loader.py
-│   │   └── rag_pipeline.py
-│   ├── requirements.txt
-│   └── .env
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── package.json
-│   └── vite.config.js
-│
-└── README.md
-```
-
----
-
-# 🚀 Installation
-
-## Backend
-
-```bash
-cd backend
-
-conda create -n documentai python=3.10
-
-conda activate documentai
-
-pip install -r requirements.txt
-
-python app.py
-```
-
-Backend runs at:
-
-```
-http://127.0.0.1:5000
-```
-
----
-
-## Frontend
-
-```bash
-cd frontend
-
-npm install
-
-npm run dev
-```
-
-Frontend runs at:
-
-```
-http://localhost:5173
-```
-
----
-
-# 🔑 Environment Variables
-
-Create a `.env` file inside the backend folder.
-
-```
-GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
-```
-
----
-
-# 📷 Output
-
-The `output/` folder contains:
-
-- Screenshots
-  - 1-homepage
-  - 2-pdf-uploading
-  - 3-pdf-uploaded
-  - 4-user-ques
-  - 5- assistant-answer
-  - 6-Q-A
-- Demo Video
-
----
-
-# 💡 Future Improvements that can be done
-
-- Multi-document support
-- Conversation memory
-- User authentication
-- Cloud deployment
-- Streaming AI responses
-
----
-
-# 👨‍💻 Developed By
-
-**Yash Panchal**
+# 🏗️ System Architecture
+
+```text
+                         USER
+                           │
+                           ▼
+                 ┌───────────────────┐
+                 │   React Frontend  │
+                 │                   │
+                 │ • PDF Upload      │
+                 │ • Chat Interface  │
+                 │ • Document List   │
+                 │ • Sources         │
+                 └─────────┬─────────┘
+                           │
+                           │ HTTP
+                           ▼
+                 ┌───────────────────┐
+                 │   FastAPI Backend │
+                 └─────────┬─────────┘
+                           │
+             ┌─────────────┴─────────────┐
+             │                           │
+             ▼                           ▼
+      PDF Upload Flow              Question Flow
+             │                           │
+             ▼                           ▼
+       PyPDFLoader                Query Rewriting
+             │                    (Gemini LLM)
+             ▼                           │
+      Text Chunking                      ▼
+             │                    Hybrid Retrieval
+             ▼                    ┌───────────────┐
+       Embeddings                │               │
+             │                   ▼               ▼
+             ▼                Vector Search   BM25 Search
+        ChromaDB                  (MMR)        (Keyword)
+             │                   │               │
+             │                   └───────┬───────┘
+             │                           ▼
+             │                          RRF
+             │                   (Score Fusion)
+             │                           │
+             │                           ▼
+             │                    Top 4 Chunks
+             │                           │
+             └───────────────────────────┤
+                                         ▼
+                                Gemini LLM
+                                         │
+                                         ▼
+                                  Generated Answer
+                                         │
+                              ┌──────────┴──────────┐
+                              ▼                     ▼
+                         AI Response          Citations
+                              │              Filename/Page/
+                              │                Chunk ID
+                              ▼
+                         Streaming
+                              │
+                              ▼
+                       React Frontend
