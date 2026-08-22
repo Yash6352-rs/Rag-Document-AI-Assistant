@@ -143,7 +143,6 @@ User Query
               ▼
          Top 4 Chunks
 ```
----
 
 ## Vector Search
 
@@ -159,7 +158,6 @@ The BM25 index is currently maintained in memory.
 
 Reciprocal Rank Fusion combines the rankings from vector search and BM25.
 
-RRF is used for score fusion; the project does not use a separate reranking model.
 ---
 
 ## ✨ Query Rewriting
@@ -184,10 +182,10 @@ The top retrieved chunks are passed to Gemini.
 
 The model is instructed to:
 
-Answer only from the provided context
-Avoid hallucinations
-Keep answers clear and concise
-Return an appropriate response when information is unavailable
+- Answer only from the provided context
+- Avoid hallucinations
+- Keep answers clear and concise
+- Return an appropriate response when information is unavailable
 
 ---
 
@@ -224,8 +222,8 @@ Multiple PDFs can be uploaded.
 
 Their chunks are added to:
 
-ChromaDB for vector search
-BM25 in-memory index for keyword search
+- ChromaDB for vector search
+- BM25 in-memory index for keyword search
 
 This allows the system to retrieve information across multiple documents.
 
@@ -276,34 +274,38 @@ conda activate documentai
 pip install -r requirements.txt
 
 uvicorn app:app --reload
-
-Backend:
-
-http://127.0.0.1:8000
 ```
 
-### API documentation:
+- Backend:
+```text
+http://127.0.0.1:8000
+```
+- API documentation:
 ```text
 http://127.0.0.1:8000/docs
-Frontend
+```
+
+### Frontend
+
+```text
 cd frontend
 
 npm install
 npm run dev
 ```
-
-### Frontend:
+- Frontend:
 ```text
 http://localhost:5173
 ```
 
 ### 🔑 Environment Variables
 
-```text
 Create .env inside the backend:
 
+```text
 GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
 ```
+---
 
 ## 🔮 Future Improvements
 
@@ -322,8 +324,9 @@ GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
 ## 👨‍💻 Developed By
 
 Yash Panchal
-```text
+
 Built with:
 
+```text
 React + FastAPI + LangChain + ChromaDB + BM25 + Gemini
 ```
