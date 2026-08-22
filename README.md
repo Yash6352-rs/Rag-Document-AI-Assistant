@@ -71,59 +71,64 @@ The system combines **semantic vector search, MMR, BM25 keyword search, and Reci
 ---
 
 ⚙️ Tech Stack
-Frontend
-React.js
-Vite
-Tailwind CSS
-Axios
-Lucide React
-React Hot Toast
-Backend
-Python
-FastAPI
-Uvicorn
-AI / RAG
-LangChain
-Google Gemini 3.6 Flash
-ChromaDB
-BM25Retriever
-Reciprocal Rank Fusion
-HuggingFace Embeddings
-PDF Processing
-PyPDFLoader
-RecursiveCharacterTextSplitter
-🧠 RAG Pipeline
-1. Document Processing
 
+- Frontend
+  - React.js
+  - Vite
+  - Tailwind CSS
+  - Axios
+
+- Backend
+  - Python
+  - FastAPI
+  - Uvicorn
+
+- AI / RAG
+  - LangChain
+  - Google Gemini 3.6 Flash
+  - ChromaDB
+  - BM25Retriever
+  - Reciprocal Rank Fusion
+  - HuggingFace Embeddings
+
+- PDF Processing
+  - PyPDFLoader
+  - RecursiveCharacterTextSplitter
+
+---
+
+# 🧠 RAG Pipeline
+
+## 1. Document Processing
 Uploaded PDFs are processed using PyPDFLoader.
 
 The extracted text is divided into chunks using:
 
+```python
 RecursiveCharacterTextSplitter(
-    chunk_size=800,
-    chunk_overlap=150
+    chunk_size=800, chunk_overlap=150
 )
 
 Each chunk receives metadata such as:
+  document_id
+  filename
+  page
+  chunk_id
 
-document_id
-filename
-page
-chunk_id
-2. Embeddings
+## 2. Embeddings
 
 The project uses:
-
 sentence-transformers/all-MiniLM-L6-v2
 
 to convert document chunks into vector embeddings.
 
 The embeddings are stored in ChromaDB for semantic retrieval.
 
-3. Hybrid Retrieval
+## 3. Hybrid Retrieval
 
 When the user asks a question, the system performs two types of retrieval:
 
+```text
 User Query
     │
     ├──► Vector Search (MMR)
@@ -135,23 +140,24 @@ User Query
               │
               ▼
          Top 4 Chunks
-Vector Search
+
+## Vector Search
 
 ChromaDB uses MMR (Maximal Marginal Relevance) to retrieve relevant and diverse chunks.
 
-BM25
+### BM25
 
 BM25 provides keyword-based retrieval, which is useful for exact terms, names, numbers and technical keywords.
 
 The BM25 index is currently maintained in memory.
 
-RRF
+### RRF
 
 Reciprocal Rank Fusion combines the rankings from vector search and BM25.
 
 RRF is used for score fusion; the project does not use a separate reranking model.
 
-✨ Query Rewriting
+## ✨ Query Rewriting
 
 The system supports conversational follow-up questions.
 
@@ -165,7 +171,7 @@ The second question is rewritten using Gemini and conversation history into a st
 
 This improves retrieval for follow-up questions.
 
-🤖 Answer Generation
+## 🤖 Answer Generation
 
 The top retrieved chunks are passed to Gemini.
 
@@ -175,7 +181,8 @@ Answer only from the provided context
 Avoid hallucinations
 Keep answers clear and concise
 Return an appropriate response when information is unavailable
-⚡ Streaming Responses
+
+## ⚡ Streaming Responses
 
 The FastAPI backend streams the generated response to the React frontend using NDJSON streaming.
 
@@ -183,10 +190,11 @@ The frontend displays the answer as it is generated.
 
 After generation, the backend sends the source information.
 
-📚 Citations
+## 📚 Citations
 
 Each answer provides source information such as:
 
+```text
 📚 Sources
 
 Generative AI Overview.pdf
@@ -196,7 +204,7 @@ Page 8 • Chunk 21
 
 This allows users to understand where the retrieved information came from.
 
-📂 Multi-PDF Support
+## 📂 Multi-PDF Support
 
 Multiple PDFs can be uploaded.
 
@@ -207,7 +215,11 @@ BM25 in-memory index for keyword search
 
 This allows the system to retrieve information across multiple documents.
 
-📁 Project Structure
+---
+
+## 📁 Project Structure
+
+```text
 Rag-Document-AI-Assistant/
 │
 ├── backend/
@@ -233,7 +245,10 @@ Rag-Document-AI-Assistant/
 │   └── vite.config.js
 │
 └── README.md
-🚀 Installation
+
+---
+
+## 🚀 Installation
 Backend
 cd backend
 
@@ -265,17 +280,22 @@ http://localhost:5173
 Create .env inside the backend:
 
 GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
-🔮 Future Improvements
-🔐 User authentication
-🎯 Metadata-based document filtering
-💾 Persistent BM25 index
-📊 RAG evaluation
-🎯 Dedicated reranking model
-☁️ Cloud deployment
-🐳 Docker support
-📄 PDF preview
-🔗 Clickable source citations
-👨‍💻 Developed By
+
+## 🔮 Future Improvements
+
+- 🔐 User authentication
+- 🎯 Metadata-based document filtering
+- 💾 Persistent BM25 index
+- 📊 RAG evaluation
+- 🎯 Dedicated reranking model
+- ☁️ Cloud deployment
+- 🐳 Docker support
+- 📄 PDF preview
+- 🔗 Clickable source citations
+
+---
+
+## 👨‍💻 Developed By
 
 Yash Panchal
 
