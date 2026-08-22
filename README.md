@@ -319,7 +319,7 @@ The output/ folder contains:
   - 7-multi-pdf-upload
   - 8-multi-document-q&a
   - Architecture Diagram
-  -  
+    
 ---
 ## 🔮 Future Improvements
 
